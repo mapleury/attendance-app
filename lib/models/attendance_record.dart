@@ -21,7 +21,7 @@ class AttendanceRecord {
       location: json['location'] as String?,
       notes: json['notes'] as String?,
       checkInPhotoPath: json['check_in_photo_path'] as String?,
-      checkOutPhotoPath: json['check_out_photo_path'] as String?
+      checkOutPhotoPath: json['check_out_photo_path'] as String?,
     );
   }
 
