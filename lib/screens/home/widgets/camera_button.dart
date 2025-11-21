@@ -3,52 +3,55 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CameraButton extends StatelessWidget {
-  final Function(String imagePath) onImageCaptured;
+ final Function(String imagePath) onImageCaptured;
   final String buttonText;
-  const CameraButton({
-    super.key,
-    required this.onImageCaptured,
-    required this.buttonText,
-  });
+
+  const CameraButton({super.key, required this.onImageCaptured, required this.buttonText});
 
   Future<void> _takePhoto(BuildContext context) async {
     try {
-      //request Camera permission
+      // req camera permit
       final status = await Permission.camera.request();
+
       if (status.isDenied) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("Camera permission is required to take photos"),
+              content: Text('Camera permission is required to take photos'),
               backgroundColor: Colors.orange,
-            ),
+            )
           );
         }
         return;
       }
+
+      // camera setting
       if (status.isPermanentlyDenied) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("Camera permission is required to take photos"),
+              content: Text('Camera permission denied, please enable in settings'),
               backgroundColor: Colors.red,
               action: SnackBarAction(
-                label: "Settings",
+                label: 'Settings',
                 onPressed: () => openAppSettings(),
               ),
-            ),
+            )
           );
         }
         return;
       }
 
+      // allow camera and capture foto
       final ImagePicker picker = ImagePicker();
+      // xfile => mendefinikan file yg berhubungan dgn apk.
       final XFile? photo = await picker.pickImage(
         source: ImageSource.camera,
         preferredCameraDevice: CameraDevice.front,
-        imageQuality: 70, //adalah compressed image
+        imageQuality: 70, // compressed image
       );
 
+    // untuk ambil sesuai path foto
       if (photo != null) {
         onImageCaptured(photo.path);
       }
@@ -56,11 +59,9 @@ class CameraButton extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: SnackBar(
-              content: Text("Error taking photo: ${e.toString()}"),
-              backgroundColor: Colors.red,
+            content: Text('Error taking photo ${e.toString()}'),
+            backgroundColor: Colors.red,
             ),
-          ),
         );
       }
     }
@@ -71,9 +72,12 @@ class CameraButton extends StatelessWidget {
     return ElevatedButton.icon(
       onPressed: () => _takePhoto(context),
       icon: Icon(Icons.camera_alt),
-      label: Text(buttonText),
+      label: Text(buttonText), 
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12
+        )
       ),
     );
   }
